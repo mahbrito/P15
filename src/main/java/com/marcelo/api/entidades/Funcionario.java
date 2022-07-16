@@ -2,7 +2,7 @@ package com.marcelo.api.entidades;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -37,8 +37,8 @@ public class Funcionario implements Serializable{
 	private Float qtdHorasTrabalhoDia;
 	private Float qtdHorasAlmoco;
 	private PerfilEnum perfil;// tem que ter o mesmo nome da classe que ele é feito
-	private Date dataCriacao;
-	private Date dataAtualizacao;
+	private LocalDateTime dataCriacao;
+	private LocalDateTime dataAtualizacao;
 	private Empresa empresa;//
 	private List<Lancamento> lancamentos; //>>TEM QUE CRIAR A CLASSE DESSA MERDA AQUI<<<
 	
@@ -156,25 +156,25 @@ public class Funcionario implements Serializable{
 
 
 	@Column (name="data_criacao", nullable=false)
-	public Date getdataCriacao() {
+	public LocalDateTime getdataCriacao() {
 		return dataCriacao;
 	}
 
 
 
-	public void setdataCriacao(Date dataCriacao) {
+	public void setdataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
 
 
 	@Column (name="data_atualizacao", nullable = false)
-	public Date getdataAtualizacao() {
+	public LocalDateTime getdataAtualizacao() {
 		return dataAtualizacao;
 	}
 
 
 
-	public void setdataAtualizacao(Date dataAtualizacao) {
+	public void setdataAtualizacao(LocalDateTime dataAtualizacao) {
 		this.dataAtualizacao = dataAtualizacao;
 	}
 
@@ -204,12 +204,12 @@ public class Funcionario implements Serializable{
 
 	@PreUpdate
     public void preUpdate() {
-        dataAtualizacao = new Date();
+        LocalDateTime dataAtualizacao = LocalDateTime.now();
     }
 	
 	@PrePersist
 	public void prePersist() {
-		final Date atual = Date();
+		LocalDateTime atual = LocalDateTime.now();
 		dataCriacao = atual;
 		dataAtualizacao = atual;
 	}

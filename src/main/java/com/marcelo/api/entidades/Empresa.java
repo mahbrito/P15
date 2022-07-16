@@ -1,11 +1,7 @@
 package com.marcelo.api.entidades;//entidades que irão conversar com o bd
-
 import java.io.Serializable;
-import java.sql.Date;
-import java.text.DateFormat;
+import java.time.LocalDateTime;
 import java.util.List;
-
-import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+
 /**
  * 
  * @author marcelo
@@ -37,23 +34,34 @@ public class Empresa implements Serializable{/**
 	 */
 	
 	private static final long serialVersionUID = 1009205827202343756L;
-
+	
+	@Id //chave primária do banco de dados 
+	@GeneratedValue(strategy=GenerationType.AUTO)//como a primary-key trabalha (o .AUTO é para ele se auto incrementar)
 	private Long id;
+	
+	@Column(name = "razao_social", nullable = false)
 	private String razaoSocial;
+	
+	@Column(name = "cnpj", nullable = false)//idem o comentário acima
 	private String cnpj;
-	private Date dataCriacao;
-	private Date dataAtualizacao;
+	
+	@Column(name = "data_criacao", nullable = false)
+	private LocalDateTime dataCriacao;
+	
+	@Column(name = "data_atualizacao", nullable = false)
+	private LocalDateTime dataAtualizacao;
+	
+	
 	private List<Funcionario> funcionarios;
 	
 	public Empresa() {//construtor padrão
 		
 	}
 	/**
-	 * nos getters e settes, precisamos adicionar as anotações tbm
+	 * na declaração variaveis, precisamos adicionar as anotações
 	 * para fazermos o mapeamento para o banco de dados
 	 */
-	@Id //chave primária do banco de dados 
-	@GeneratedValue(strategy=GenerationType.AUTO)//como a primary-key trabalha (o .AUTO é para ele se auto incrementar)
+
 	public Long getId() {
 		return id;
 	}
@@ -65,7 +73,7 @@ public class Empresa implements Serializable{/**
 	/*o campo razão social é uma coluna (o name é opcional)
 	 * o comando nullable=false faz com que o campo seja obrigatório no banco de dados
 	 */
-	@Column(name = "razao_social", nullable = false)
+	
 	public String getRazaoSocial() {
 		return razaoSocial;
 	}
@@ -74,7 +82,7 @@ public class Empresa implements Serializable{/**
 		this.razaoSocial = razaoSocial;
 	}
 
-	@Column(name="cnpj", nullable = false)//idem o comentário acima
+	
 	public String getCnpj() {
 		return cnpj;
 	}
@@ -83,35 +91,28 @@ public class Empresa implements Serializable{/**
 		this.cnpj = cnpj;
 	}
 
-	@Column (name="data_criacao", nullable = false)
-	public Date getDataCriacao() {
+	public LocalDateTime getDataCriacao() {
 		return dataCriacao;
 	}
-
-	public void setDataCriacao(Date dataCriacao) {
+	public void setDataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
-
-	@Column (name="data_atualizacao", nullable=false)
-	public Date getDataAtualizacao() {
+	public LocalDateTime getDataAtualizacao() {
 		return dataAtualizacao;
 	}
-
-	public void setDataAtualizacao(Date dataAtualizacao) {
+	public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
 		this.dataAtualizacao = dataAtualizacao;
 	}
+	
 	
 	/*@Column (name="funcionario", nullable=false)
 	public List<Funcionario> getFuncionarios() {
 		return funcionarios;
 	}*/
 
-	public void setFuncionarios(List<Funcionario> funcionarios) {
-		this.funcionarios = funcionarios;
-	}
-
+	
 	/**
-	 ** Uma empresa possui 0 um n funcionários, sendo assim, usamos 
+	 ** Uma empresa possui 0 um N funcionários, sendo assim, usamos 
 	 ** função um para muitos.
 	 ** Precisamos tbm do mappedBy da empresa para pegar o atributo
 	 ** da classe Funcionario.
@@ -129,14 +130,18 @@ public class Empresa implements Serializable{/**
 		return funcionarios;
 	}
 	
-	@PreUpdate//Fazendo uma atualização
-	public void preUpdate() {
-		dataAtualizacao = new Date();
+	public void setFuncionarios(List<Funcionario> funcionarios) {
+		this.funcionarios = funcionarios;
 	}
 	
-	@PrePersist
+	@PreUpdate//Fazendo uma atualização
+	public void preUpdate() {
+		LocalDateTime dataAtualizacao = LocalDateTime.now();
+	}
+	
+	@PrePersist//quando estamos inserindo um elemento pela primeira vez
 	public void prePersist() {
-		final Date atual = new Date();//cria uma nova data
+		LocalDateTime atual = LocalDateTime.now();//cria uma nova data
 		dataCriacao = atual;//a data de criação é atualizada
 		dataAtualizacao=atual;//a de atualização tbm
 	}
